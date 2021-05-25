@@ -1,0 +1,190 @@
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title"> View Requests </ui:define>
+	<f:metadata>
+		<f:viewAction action="#{requestsBean.init}" />
+	</f:metadata>
+
+	<ui:define name="content">
+		<h:head>
+			<f:facet name="last">
+				<h:outputStylesheet name="css/style.css" position="last" />
+			</f:facet>
+		</h:head>
+		<h:body>
+			<div id="pageLoaderNotes" class="loaderNotesLock"></div>
+			<h:form id="requestForm">
+				<div class="card crud-demo">
+					<p:growl id="messages" showDetail="true" />
+
+					<p:dataTable id="dt-requests" widgetVar="dt-requests" var="req"
+						value="#{requestsBean.requests}" reflow="true"
+						styleClass="products-table"
+						selection="#{requestsBean.selectedRequests}" rowKey="#{req.id}"
+						paginator="true" rows="8" rowSelectMode="add"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {AddNewElement}"
+						rowsPerPageTemplate="8,16,32">
+
+						<p:column selectionMode="multiple" exportable="false"
+							style="width: 15px !important"></p:column>
+
+						<p:column headerText="Name" sortBy="#{req.name}"
+							filterBy="#{req.name}">
+							<h:outputText value="#{req.name}" />
+						</p:column>
+
+						<p:column headerText="Owner" sortBy="#{req.ownerName}"
+							filterBy="#{req.ownerName}">
+							<h:outputText value="#{req.ownerName}" />
+						</p:column>
+
+						<p:column headerText="Type" sortBy="#{req.requestType}"
+							filterBy="#{req.requestType}">
+							<h:outputText value="#{req.requestType}" />
+						</p:column>
+
+						<p:column headerText="Due date" sortBy="#{req.dueDate}"
+							filterBy="#{req.dueDate}">
+							<h:outputText value="#{req.dueDate}">
+								<f:convertDateTime
+									pattern="#{requestsBean.defaultDateTimeFormat}" />
+							</h:outputText>
+						</p:column>
+
+						<p:column styleClass="p-text-right" exportable="false">
+							<f:facet name="header">
+								<h:outputText value="Resolved" />
+							</f:facet>
+							<h:outputText value="Unresolved"
+								style="text-transform: uppercase; background-color: palegoldenrod !important;"
+								rendered="#{req.resolved == 'false'}" />
+							<h:outputText value="Resolved"
+								style="text-transform: uppercase; background-color: lightblue !important;"
+								rendered="#{req.resolved == 'true'}" />
+						</p:column>
+
+						<p:column exportable="false"
+							style="margin: auto !important; width: 100px !important">
+							<p:commandButton icon="pi pi-pencil"
+								update=":manageRequestDialog"
+								oncomplete="PF('manageRequestDialog').show()"
+								styleClass="rounded-button ui-button-secondary" process="@this">
+								<f:setPropertyActionListener value="#{req}"
+									target="#{requestsBean.selectedRequest}" />
+								<p:resetInput target=":manageRequestDialog" />
+							</p:commandButton>
+							<p:commandButton class="ui-button-warning rounded-button"
+								icon="pi pi-trash"
+								action="#{requestsBean.deleteRequest(req.id)}"
+								style="margin-left: 5px !important">
+								<p:confirm header="Confirmation"
+									message="Are you sure you want to delete this request?"
+									icon="ui-icon-alert" />
+							</p:commandButton>
+						</p:column>
+
+						<f:facet name="paginatorTopLeft">
+							<p:commandButton value="New" icon="pi pi-plus"
+								actionListener="#{requestsBean.openNew}"
+								update=":manageRequestDialog"
+								oncomplete="PF('manageRequestDialog').show()"
+								styleClass="ui-button-secondary" style="margin-right: .5rem">
+								<p:resetInput target=":manageRequestDialog" />
+							</p:commandButton>
+
+							<p:commandButton value="Export" styleClass="ui-button-warning">
+								<p:dataExporter type="pdf" target="dt-requests"
+									fileName="Requests"
+									preProcessor="#{requestsBean.preProcessPDF}" />
+							</p:commandButton>
+						</f:facet>
+					</p:dataTable>
+
+					<p:confirmDialog global="true" showEffect="fade" width="300">
+						<p:commandButton value="Yes" type="button"
+							styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+						<p:commandButton value="No" type="button"
+							styleClass="ui-confirmdialog-no ui-button-secondary"
+							icon="pi pi-times" />
+					</p:confirmDialog>
+				</div>
+				<input type="hidden" name="${_csrf.parameterName}"
+					value="${_csrf.token}" />
+			</h:form>
+			<script>
+				$(window).on('load', function() {
+					$("#pageLoaderNotes").hide();
+				});
+			</script>
+		</h:body>
+
+		<!-- add dialog form outside of the general body form to use commands and have the dialog show up on top of the body-->
+		<p:dialog header="Request Details" width="420"
+			widgetVar="manageRequestDialog" id="manageRequestDialog">
+			<h:form>
+				<h:panelGrid columns="2" cellpadding="7">
+
+					<p:outputLabel for="name">Name</p:outputLabel>
+					<p:inputText id="name" value="#{requestsBean.selectedRequest.name}"
+						required="true" requiredMessage="Please add the request name."
+						maxlength="60" />
+
+					<p:outputLabel for="owner">Owner</p:outputLabel>
+					<p:selectOneMenu id="owner"
+						value="#{requestsBean.selectedRequest.selectedOwner.id}"
+						panelStyle="width:180px" required="true">
+
+						<f:selectItem itemLabel="- Select One -" noSelectionOption="true" />
+						<f:selectItems value="#{requestsBean.users}" var="owner"
+							itemLabel="#{owner.firstName} #{owner.lastName}"
+							itemValue="#{owner.id}" />
+						<f:facet name="footer">
+							<h:outputText value="#{requestsBean.users.size()} owners"
+								style="font-weight:bold;" styleClass="p-py-1 p-d-block" />
+						</f:facet>
+					</p:selectOneMenu>
+
+					<p:outputLabel for="type">Type</p:outputLabel>
+					<p:selectOneButton id="type"
+						value="#{requestsBean.selectedRequest.requestType}"
+						layout="responsive" columns="2" required="true"
+						requiredMessage="Please select the request type.">
+						<f:selectItem itemLabel="Complaint" itemValue="Complaint" />
+						<f:selectItem itemLabel="Document" itemValue="Document" />
+						<f:selectItem itemLabel="Other" itemValue="Other" />
+					</p:selectOneButton>
+
+					<p:outputLabel for="resolved">Resolved</p:outputLabel>
+					<p:toggleSwitch id="resolved" required="true"
+						requiredMessage="Please mark the resolved state."
+						value="#{requestsBean.selectedRequest.resolved}" />
+
+					<p:outputLabel for="dueDate">Due date</p:outputLabel>
+					<p:datePicker id="dueDate"
+						value="#{requestsBean.selectedRequest.dueDate}" />
+
+					<p:outputLabel for="descr">Details</p:outputLabel>
+					<p:inputTextarea id="descr" rows="5" cols="22" autoResize="false"
+						maxlength="255" value="#{requestsBean.selectedRequest.details}" />
+
+					<f:facet name="footer">
+						<p:commandButton value="Save" icon="pi pi-check"
+							styleClass="ui-button-raised ui-button-warning"
+							action="#{requestsBean.saveRequest}" ajax="false"
+							update=":requestForm:dt-requests" />
+						<p:commandButton value="Cancel" icon="pi pi-times"
+							oncomplete="PF('manageRequestDialog').hide()"
+							onclick="PF('manageRequestDialog').hide()"
+							styleClass="ui-button-raised ui-button-success"
+							style="margin-left: 5px !important" />
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

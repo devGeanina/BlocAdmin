@@ -1,0 +1,75 @@
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title"> Home </ui:define>
+	<f:metadata>
+		<f:viewAction action="#{homeBean.init}" />
+	</f:metadata>
+
+	<ui:define name="content">
+		<h:head>
+			<f:facet name="last">
+				<style type="text/css">
+.high {
+	background-color: #607D8B !important;
+	background-image: none !important;
+	color: #ffffff !important;
+}
+</style>
+			</f:facet>
+		</h:head>
+
+		<h:body style="margin: auto">
+			<div id="pageLoaderNotes" class="loaderLock"></div>
+
+			<p:panelGrid
+				style="margin: auto; margin-top: 30px; border-style: hidden !important; background-color: white !important;">
+				<p:row
+					style="margin: auto; margin-top: 30px; border-style: hidden !important;  background-color: white !important;">
+					<p:column
+						style="width:800px; margin: auto; margin-top: 30px; border-style: hidden !important;  background-color: white !important;">
+						<div class="card">
+							<p:dataTable var="household" value="#{homeBean.households}"
+								rowStyleClass="#{household.totalDebt gt 100.0 ? 'high' : null}"
+								rows="10">
+
+								<p:column headerText="Building">
+									<h:outputText value="#{household.buildingNr}" />
+								</p:column>
+
+								<p:column headerText="Apartment">
+									<h:outputText value="#{household.appartmentNr}" />
+								</p:column>
+
+								<p:column headerText="Owner">
+									<h:outputText value="#{household.ownerName}" />
+								</p:column>
+
+								<p:column headerText="Total Debt">
+									<h:outputText value="#{household.totalDebt}" />
+								</p:column>
+							</p:dataTable>
+						</div>
+					</p:column>
+					<p:column
+						style="margin: auto; margin-top: 30px; border-style: hidden !important;  background-color: white !important;">
+						<div class="card">
+							<p:barChart model="#{homeBean.barModel}"
+								style="width: 100%; height: 500px;" />
+						</div>
+					</p:column>
+				</p:row>
+			</p:panelGrid>
+
+			<script>
+				$(window).on('load', function() {
+					$("#pageLoaderNotes").hide();
+				});
+			</script>
+		</h:body>
+	</ui:define>
+</ui:composition>

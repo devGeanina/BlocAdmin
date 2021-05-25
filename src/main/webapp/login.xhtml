@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<title>BlocAdmin</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<link rel="shortcut icon" type="image/x-icon"
+		href="resources/images/blocadmin.png" />
+</h:head>
+
+<h:body>
+	<div id="pageLoaderNotes"
+		style="display: block; visibility: visible; position: absolute; z-index: 999; top: 0px; left: 0px; width: 105%; height: 105%; background-color: white; padding-top: 20%; filter: alpha(opacity = 75); opacity: 0.75; background-image: url('resources/images/loader.gif'); background-repeat: no-repeat; background-attachment: fixed; background-position: center;"></div>
+	<h:form id="loginForm">
+		<p:growl id="msg" showDetail="true" life="4000" />
+		<div class="card">
+			<p:graphicImage name="blocadmin.png" library="images"
+				style="margin-left: 44em; margin-bottom: -8em; margin-top: 8em; width: 100px; position:relative; height: 100px;" />
+		</div>
+		<p:panel id="loginPnl" header="Login"
+			style="width: 350px; position:relative; height: 100px; margin:0 auto; padding: 10% 0;">
+			<h:panelGrid id="loginPanel" columns="2" cellpadding="5">
+				<h:outputText value="Username" />
+				<p:inputText id="username" value="#{loginBean.username}"></p:inputText>
+				<p:spacer />
+				<p:spacer />
+				<h:outputText value="Password" />
+				<p:password id="password" value="#{loginBean.password}"
+					feedback="false"></p:password>
+				<p:message for="password"></p:message>
+			</h:panelGrid>
+			<h:panelGrid columns="1" cellpadding="10" width="100%">
+				<p:commandButton id="loginButton" action="#{loginBean.login}"
+					value="Sign in" update="loginForm" ajax="true"
+					style="float: right;"
+					styleClass="ui-button-raised ui-button-secondary"
+					onclick="$('#pageLoaderNotes').show()">
+				</p:commandButton>
+			</h:panelGrid>
+		</p:panel>
+	</h:form>
+	<script>
+		$(window).on('load', function() {
+			$("#pageLoaderNotes").hide();
+		});
+	</script>
+</h:body>
+</html>

@@ -1,0 +1,186 @@
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="title"> View Households </ui:define>
+	<f:metadata>
+		<f:viewAction action="#{householdsBean.init}" />
+	</f:metadata>
+
+	<ui:define name="content">
+		<h:head>
+			<f:facet name="last">
+				<h:outputStylesheet name="css/style.css" position="last" />
+			</f:facet>
+		</h:head>
+		<h:body>
+			<div id="pageLoaderNotes" class="loaderNotesLock"></div>
+			<h:form id="householdForm">
+				<div class="card crud-demo">
+					<p:growl id="messages" showDetail="true" />
+
+					<p:dataTable id="dt-households" widgetVar="dt-households"
+						var="household" value="#{householdsBean.households}" reflow="true"
+						styleClass="products-table"
+						selection="#{householdsBean.selectedHouseholds}"
+						rowKey="#{household.id}" paginator="true" rows="8"
+						rowSelectMode="add"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {AddNewElement}"
+						rowsPerPageTemplate="8,16,32">
+
+						<p:column selectionMode="multiple" exportable="false"
+							style="width: 15px !important"></p:column>
+
+						<p:column headerText="Owner" sortBy="#{household.ownerName}"
+							filterBy="#{household.ownerName}">
+							<h:outputText value="#{household.ownerName}" />
+						</p:column>
+
+						<p:column headerText="Address" sortBy="#{household.buildingNr}"
+							filterBy="#{household.appartmentNr}">
+							<h:outputText
+								value="Building: #{household.buildingNr}, Apartment: #{household.appartmentNr}" />
+						</p:column>
+
+						<p:column headerText="Rooms nr." sortBy="#{household.roomsNr}"
+							filterBy="#{household.roomsNr}">
+							<h:outputText value="#{household.roomsNr}" />
+						</p:column>
+
+						<p:column headerText="Capacity"
+							sortBy="#{household.totalCapacity}"
+							filterBy="#{household.totalCapacity}">
+							<h:outputText value="#{household.totalCapacity}" />
+						</p:column>
+
+						<p:column headerText="Nr. occupants"
+							sortBy="#{household.nrCurrentOccupants}"
+							filterBy="#{household.nrCurrentOccupants}">
+							<h:outputText value="#{household.nrCurrentOccupants}" />
+						</p:column>
+
+						<p:column exportable="false"
+							style="margin: auto !important; width: 100px !important">
+							<p:commandButton icon="pi pi-pencil"
+								update=":manageHouseholdDialog"
+								oncomplete="PF('manageHouseholdDialog').show()"
+								styleClass="rounded-button ui-button-secondary" process="@this">
+								<f:setPropertyActionListener value="#{household}"
+									target="#{householdsBean.selectedHousehold}" />
+								<p:resetInput target=":manageHouseholdDialog" />
+							</p:commandButton>
+							<p:commandButton class="ui-button-warning rounded-button"
+								icon="pi pi-trash"
+								action="#{householdsBean.deleteHousehold(household.id)}"
+								style="margin-left: 5px !important">
+								<p:confirm header="Confirmation"
+									message="Are you sure you want to delete this household?"
+									icon="ui-icon-alert" />
+							</p:commandButton>
+						</p:column>
+
+						<f:facet name="paginatorTopLeft">
+							<p:commandButton value="New" icon="pi pi-plus"
+								actionListener="#{householdsBean.openNew}"
+								update=":manageHouseholdDialog"
+								oncomplete="PF('manageHouseholdDialog').show()"
+								styleClass="ui-button-secondary" style="margin-right: .5rem">
+								<p:resetInput target=":manageHouseholdDialog" />
+							</p:commandButton>
+
+							<p:commandButton value="Export" styleClass="ui-button-warning">
+								<p:dataExporter type="pdf" target="dt-households"
+									fileName="Households"
+									preProcessor="#{householdsBean.preProcessPDF}" />
+							</p:commandButton>
+						</f:facet>
+					</p:dataTable>
+
+					<p:confirmDialog global="true" showEffect="fade" width="300">
+						<p:commandButton value="Yes" type="button"
+							styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+						<p:commandButton value="No" type="button"
+							styleClass="ui-confirmdialog-no ui-button-secondary"
+							icon="pi pi-times" />
+					</p:confirmDialog>
+				</div>
+				<input type="hidden" name="${_csrf.parameterName}"
+					value="${_csrf.token}" />
+			</h:form>
+			<script>
+				$(window).on('load', function() {
+					$("#pageLoaderNotes").hide();
+				});
+			</script>
+		</h:body>
+
+		<!-- add dialog form outside of the general body form to use commands and have the dialog show up on top of the body-->
+		<p:dialog header="Household Details" width="420"
+			widgetVar="manageHouseholdDialog" id="manageHouseholdDialog">
+			<h:form>
+				<h:panelGrid columns="2" cellpadding="7">
+
+					<p:outputLabel for="owner">Owner</p:outputLabel>
+					<p:selectOneMenu id="owner"
+						value="#{householdsBean.selectedHousehold.selectedOwner.id}"
+						panelStyle="width:180px" required="true">
+
+						<f:selectItem itemLabel="- Select One -" noSelectionOption="true" />
+						<f:selectItems value="#{householdsBean.users}" var="owner"
+							itemLabel="#{owner.firstName} #{owner.lastName}"
+							itemValue="#{owner.id}" />
+						<f:facet name="footer">
+							<h:outputText value="#{householdsBean.users.size()} owners"
+								style="font-weight:bold;" styleClass="p-py-1 p-d-block" />
+						</f:facet>
+					</p:selectOneMenu>
+
+					<p:outputLabel for="buildingNr">Building number</p:outputLabel>
+					<p:inputNumber id="buildingNr" required="true"
+						requiredMessage="Please input the building number."
+						value="#{householdsBean.selectedHousehold.buildingNr}" />
+
+					<p:outputLabel for="appartmentNr">Appartment number</p:outputLabel>
+					<p:inputNumber id="appartmentNr" required="true"
+						requiredMessage="Please input the appartment number."
+						value="#{householdsBean.selectedHousehold.appartmentNr}" />
+
+					<p:outputLabel for="nrCurrentOccupants">Nr. occupants</p:outputLabel>
+					<p:inputNumber id="nrCurrentOccupants" required="true"
+						requiredMessage="Please input the number of current occupants."
+						value="#{householdsBean.selectedHousehold.nrCurrentOccupants}" />
+
+					<p:outputLabel for="totalCapacity">Total capacity</p:outputLabel>
+					<p:inputNumber id="totalCapacity" required="true"
+						requiredMessage="Please input the household's capacity."
+						value="#{householdsBean.selectedHousehold.totalCapacity}" />
+
+					<p:outputLabel for="roomsNr">Rooms number</p:outputLabel>
+					<p:inputNumber id="roomsNr" required="true"
+						requiredMessage="Please input the rooms number."
+						value="#{householdsBean.selectedHousehold.roomsNr}" />
+
+					<p:outputLabel for="descr">Details</p:outputLabel>
+					<p:inputTextarea id="descr" rows="5" cols="22" autoResize="false"
+						maxlength="255"
+						value="#{householdsBean.selectedHousehold.details}" />
+
+					<f:facet name="footer">
+						<p:commandButton value="Save" icon="pi pi-check"
+							styleClass="ui-button-raised ui-button-warning"
+							action="#{householdsBean.saveHousehold}" ajax="false"
+							update=":householdForm:dt-households" />
+						<p:commandButton value="Cancel" icon="pi pi-times"
+							oncomplete="PF('manageHouseholdDialog').hide()"
+							onclick="PF('manageHouseholdDialog').hide()"
+							styleClass="ui-button-raised ui-button-success"
+							style="margin-left: 5px !important" />
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

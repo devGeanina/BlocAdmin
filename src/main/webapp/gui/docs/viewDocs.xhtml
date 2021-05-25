@@ -1,0 +1,114 @@
+<ui:composition template="/WEB-INF/templates/layout.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<ui:define name="title"> View Documents </ui:define>
+	<f:metadata>
+		<f:viewAction action="#{docsBean.init}" />
+	</f:metadata>
+
+	<ui:define name="content">
+		<h:head>
+			<f:facet name="last">
+				<h:outputStylesheet name="css/style.css" position="last" />
+			</f:facet>
+		</h:head>
+		<h:body style="margin: auto">
+			<div id="pageLoaderNotes" class="loaderNotesLock"></div>
+			<div>
+				<h:form id="docForm">
+					<p:growl id="messages" showDetail="true" />
+					
+					<p:dataTable var="doc" value="#{docsBean.documents}"
+						id="dt-docs" rows="8" paginator="true" rowsPerPageTemplate="8,16,32"
+						widgetVar="dt-docs" selection="#{docsBean.selectedDocument}"
+						rowKey="#{doc.id}"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						gridIcon="pi pi-th-large" multiViewState="false"
+						emptyMessage="There are no documents added yet."
+						styleClass="products-table" selectionMode="single">
+
+						<p:column headerText="Name" sortBy="#{doc.name}"
+							filterBy="#{doc.name}">
+							<h:outputText value="#{doc.name}" />
+						</p:column>
+						<p:column headerText="Type" sortBy="#{doc.contentType}"
+							filterBy="#{doc.contentType}">
+							<h:outputText value="#{doc.contentType}" />
+						</p:column>
+
+						<p:column style="width: 150px !important;">
+							<p:commandButton icon="pi pi-arrow-down"
+								styleClass="rounded-button ui-button-secondary" ajax="false"
+								style="margin-right:5px !important;"
+								actionListener="#{docsBean.prepareToDownload(doc)}">
+								<p:fileDownload value="#{docsBean.streamedFile}" />
+							</p:commandButton>
+							<p:commandButton icon="pi pi-minus" id="idDelete"
+								style="margin-right:5px !important"
+								styleClass="rounded-button ui-button-warning" value="Delete"
+								action="#{docsBean.deleteDoc(doc.id)}">
+								<p:confirm header="Confirmation"
+									message="Are you sure you want to delete this document?"
+									icon="ui-icon-alert" />
+							</p:commandButton>
+						</p:column>
+						
+						<f:facet name="paginatorTopLeft">
+							<p:commandButton value="New" icon="pi pi-plus"
+								actionListener="#{docsBean.openNew}"
+								update=":manageDocDialog"
+								oncomplete="PF('manageDocDialog').show()"
+								styleClass="ui-button-secondary" style="margin-right: .5rem">
+								<p:resetInput target="manageDocDialog" />
+							</p:commandButton>
+						</f:facet>
+					</p:dataTable>
+
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+						<p:commandButton value="Yes" type="button"
+							styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						<p:commandButton value="No" type="button"
+							styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>
+
+					<input type="hidden" name="${_csrf.parameterName}"
+						value="${_csrf.token}" />
+				</h:form>
+			</div>
+			<script>
+				$(window).on('load', function() {
+					$("#pageLoaderNotes").hide();
+				});
+			</script>
+		</h:body>
+
+		<!-- add dialog form outside of the general body form to use commands and have the dialog show up on top of the body-->
+		<p:dialog header="Document Upload" width="250"
+			widgetVar="manageDocDialog" id="manageDocDialog">
+			<h:form enctype="multipart/form-data">
+				<p:outputPanel id="manage-file-content" class="ui-fluid">
+					<p:outputPanel>
+						<div class="p-field">
+							<p:fileUpload value="#{docsBean.uploadedFile}" mode="simple"
+								skinSimple="true" />
+						</div>
+					</p:outputPanel>
+				</p:outputPanel>
+				<p:commandButton value="Save" icon="pi pi-check"
+					action="#{docsBean.saveDoc}" ajax="false"
+					update=":docForm:dt-docs"
+					styleClass="ui-button-raised ui-button-warning" />
+				<p:commandButton value="Cancel" icon="pi pi-times"
+					oncomplete="PF('manageDocDialog').hide()"
+					styleClass="ui-button-raised ui-button-success"
+					style="margin-left: 5px !important"
+					onclick="PF('manageDocDialog').hide()" />
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.blocadmin</groupId>
+	<artifactId>BlocAdmin</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<name>BlocAdmin</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+		<spring.version>4.3.2.RELEASE</spring.version>
+		<servlet.version>3.1.0</servlet.version>
+		<jsf.version>2.2.20</jsf.version>
+		<hibernate.version>4.3.1.Final</hibernate.version>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>springsource-milestones</id>
+			<name>SpringSource Milestones Proxy</name>
+			<url>https://oss.sonatype.org/content/repositories/springsource-milestones</url>
+		</repository>
+
+		<repository>
+			<id>prime-repo</id>
+			<name>PrimeFaces Maven Repository</name>
+			<url>https://repository.primefaces.org</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
+
+	<build>
+		<finalName>BlocAdmin</finalName>
+		<plugins>
+			<!-- Maven -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+					<webResources>
+						<resource>
+							<directory>${basedir}/src/main/java</directory>
+							<targetPath>WEB-INF/classes</targetPath>
+							<includes>
+								<include>**/*.properties</include>
+								<include>**/*.xml</include>
+								<include>**/*.css</include>
+								<include>**/*.html</include>
+							</includes>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+			<!-- Tomcat server embedded -->
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<port>9090</port>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<!-- Servlet -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${servlet.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Faces Implementation -->
+		<dependency>
+			<groupId>com.sun.faces</groupId>
+			<artifactId>jsf-impl</artifactId>
+			<version>${jsf.version}</version>
+		</dependency>
+		<!-- Faces Library -->
+		<dependency>
+			<groupId>com.sun.faces</groupId>
+			<artifactId>jsf-api</artifactId>
+			<version>${jsf.version}</version>
+		</dependency>
+		<!-- Primefaces -->
+		<dependency>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+			<version>10.0.0-RC1</version>
+		</dependency>
+		<!-- Postgresql -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.2.18</version>
+		</dependency>
+		<!-- EL library, needed for Tomcat -->
+		<dependency>
+			<groupId>com.sun.el</groupId>
+			<artifactId>el-ri</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<!-- Spring ORM -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- Spring Web -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- Spring transaction manager -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- Spring JDBC -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>5.2.12.RELEASE</version>
+		</dependency>
+		<!-- Hibernate libraries -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.1-api</artifactId>
+			<version>1.0.2.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<version>3.5.6-Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-ehcache</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<!-- Required By Hibernate -->
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.12.1.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>3.9.0</version>
+		</dependency>
+		<!-- JUnit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- Allow usage of CDI dependency injection with Tomcat -->
+		<dependency>
+			<groupId>org.jboss.weld.servlet</groupId>
+			<artifactId>weld-servlet</artifactId>
+			<version>2.4.8.Final</version>
+		</dependency>
+		<!-- Javax to use Inject -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+		<!-- Java PDF export library usage -->
+		<dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>itext</artifactId>
+			<version>2.1.7</version>
+			<scope>compile</scope>
+		</dependency>
+		<!-- Apache Logger Lof4j -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.14.0</version>
+		</dependency>
+	</dependencies>
+</project>

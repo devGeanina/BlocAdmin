@@ -1,0 +1,62 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:sec="http://www.springframework.org/security/tags">
+
+	<p:menubar style="background-color: #cce4f7">
+		<p:submenu label="Users" icon="pi pi-fw pi-user">
+			<p:menuitem value="View" icon="pi pi-fw pi-users"
+				outcome="/gui/users/viewUsers" />
+		</p:submenu>
+
+		<p:submenu label="Households" icon="pi pi-fw pi-home">
+			<p:menuitem value="View" icon="pi pi-fw pi-search-plus"
+				outcome="/gui/households/viewHouseholds" />
+			<p:menuitem value="Summary" icon="pi pi-fw pi-external-link"
+				onclick="PF('usersHouseholdsView').show()"/>
+		</p:submenu>
+
+		<p:submenu label="Budgets" icon="pi pi-fw pi-wallet">
+			<p:menuitem value="View" icon="pi pi-fw pi-search-plus"
+				outcome="/gui/budgets/viewBudgets" />
+			<p:menuitem value="Summary" icon="pi pi-fw pi-external-link"
+				onclick="PF('budgetSummaryView').show()"/>
+		</p:submenu>
+
+		<p:submenu label="Expenses" icon="pi pi-fw pi-money-bill">
+			<p:menuitem value="View" icon="pi pi-fw pi-search-plus"
+				outcome="/gui/expenses/viewExpenses" />
+			<p:menuitem value="Summary" icon="pi pi-fw pi-external-link"
+				onclick="PF('expensesSummaryView').show()"/>
+		</p:submenu>
+
+		<p:submenu label="Requests" icon="pi pi-fw pi-exclamation-triangle">
+			<p:menuitem value="View" icon="pi pi-fw pi-search-plus"
+				outcome="/gui/requests/viewRequests" />
+			<p:menuitem value="Summary" icon="pi pi-fw pi-external-link"
+				onclick="PF('requestsSummaryView').show()"/>
+		</p:submenu>
+
+		<p:submenu label="Docs" icon="pi pi-fw pi-file">
+			<p:menuitem value="View" icon="pi pi-fw pi-search-plus"
+				outcome="/gui/docs/viewDocs" />
+		</p:submenu>
+
+		<f:facet name="options">
+			<p:commandButton icon="pi pi-home"
+				styleClass="rounded-button ui-button-secondary"
+				style="margin-left: .3rem !important;"
+				action="/gui/home.xhtml?faces-redirect=true" />
+			<p:commandButton icon="pi pi-sign-out"
+				styleClass="rounded-button ui-button-secondary"
+				style="margin-left: .3rem !important;" action="#{loginBean.logout}" />
+		</f:facet>
+	</p:menubar>
+
+	<ui:include src="/gui/budgets/budgetsSummary.xhtml" />
+	<ui:include src="/gui/expenses/expensesSummary.xhtml" />
+	<ui:include src="/gui/households/householdsSummary.xhtml" />
+	<ui:include src="/gui/requests/requestsSummary.xhtml" />
+</ui:composition>

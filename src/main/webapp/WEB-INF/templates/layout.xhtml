@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+<f:view contentType="text/html">
+	<h:head>
+		<f:facet name="first">
+			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+			<meta http-equiv="pragma" content="no-cache" />
+			<meta http-equiv="cache-control" content="no-cache" />
+			<meta http-equiv="expires" content="0" />
+		</f:facet>
+		<f:facet name="last">
+			<style type="text/css">
+				.ui-layout-pane-north .ui-layout-unit-content {
+					overflow: visible;
+				}
+				
+				.box, .sample-layout>div {
+					text-align: left;
+					padding-bottom: 0.5em;
+					border-radius: 4px;
+					color: #30383c;
+				}
+				
+				.box-stretched {
+					height: 100%;
+					box-sizing: border-box;
+				}
+				
+				.sample-layout {
+					margin: 0;
+				}
+				
+				.sample-layout>div {
+					border: 1px solid #ffffff;
+				}
+				
+				.vertical-container {
+					margin: 0;
+					height: 200px;
+					background: #efefef;
+					border-radius: 4px;
+				}
+				
+				.nested-grid .p-col-4 {
+					padding-bottom: 1em;
+				}
+				
+				.doc-table {
+					font-family: arial, sans-serif;
+					border-collapse: collapse;
+					width: 100%;
+				}
+				
+				.doc-table td, .doc-table th {
+					border: 1px solid #e5ebf0;
+					text-align: left;
+					padding: 8px;
+				}
+				
+				.doc-table tr:nth-child(odd) {
+					background-color: #f3f6f9;
+				}
+			</style>
+		</f:facet>
+		<title>BlocAdmin</title>
+		<link rel="shortcut icon" type="image/x-icon"
+			href="#{request.contextPath}/resources/images/blocadmin.png" />
+	</h:head>
+	<h:body>
+		<div class="card">
+			<div class="p-grid p-dir-col">
+				<div class="p-col">
+					<div class="box">
+						<h:form id="menuForm">
+							<ui:include src="../templates/menu.xhtml" />
+						</h:form>
+					</div>
+				</div>
+				<div class="p-col">
+					<div class="box">
+						<ui:insert name="content">@blocadmin</ui:insert>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<h:outputStylesheet library="css" name="css/style.css" />
+	</h:body>
+</f:view>
+</html>

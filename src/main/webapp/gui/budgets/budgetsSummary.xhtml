@@ -1,0 +1,23 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:dialog header="Summary" widgetVar="budgetSummaryView"
+		appendToBody="true" modal="true" resizable="false" draggable="false">
+		<h:form id="summaryForm">
+			<p:card style="width: 25em">
+				<f:facet name="header">
+					<div style="width: 125px; height: 125px; margin: auto">
+						<p:graphicImage library="images" name="budget.png"/>
+					</div>
+				</f:facet>
+				<f:facet name="title">
+			        Bugets Summary
+				</f:facet>
+				<h:outputText value="#{budgetsBean.summary}" />
+			</p:card>
+		</h:form>
+	</p:dialog>
+</ui:composition>
