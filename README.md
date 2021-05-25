@@ -1,3 +1,4 @@
+
 ## BlocAdmin
 Web application that allows the administrator of any building complex to manage the information regarding the buildings, residents, resident requests, budgets and expenses, as well as keeping all the information and documents in one place.
 
@@ -20,3 +21,6 @@ Install pgAdmin if you want to see and manage the database. Set up the database 
 
 ## Author
 * **Geanina Chiricuta**
+
+## Demo
+https://user-images.githubusercontent.com/35954631/119496829-8e830180-bd6c-11eb-9f07-9f6dc45c45bb.mp4
