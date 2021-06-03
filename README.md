@@ -1,6 +1,6 @@
 
 ## BlocAdmin
-Web application that allows the administrator of any building complex to manage the information regarding the buildings, residents, resident requests, budgets and expenses, as well as keeping all the information and documents in one place.
+Monolithic web application that allows the administrator of any building complex to manage the information regarding the buildings, residents, resident requests, budgets and expenses, as well as keeping all the information and documents in one place.
 
 ## Pre-requisites
 Have a web server installed in order to run the application. Tomcat was used for the making of it.
